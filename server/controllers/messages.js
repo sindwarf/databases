@@ -1,14 +1,21 @@
 var models = require('../models');
 
+
+
 module.exports = {
   get: function (req, res) {
     console.log('Serving request type ' + req.method + ' for url ' + req.url);
     //don't have to pass down anything except a callback because this only gets called when reading all
-    models.messages.create((err, messages) => {
+    models.messages.getAll((err, messages) => {
       if (err) {
-        res.send(404, 'Something went wrong in get');
+        res.status(404).json('Testing Error');
+        //res.send(404, 'Something went wrong in get');
       } else {
-        res.send(200, messages);//sends error code and data
+
+        //res.send(200, messages);//sends error code and data
+        //console.log('response data: ', res.data);
+        res.status(200).json(messages);
+        //json
       }
     });
   },
@@ -19,12 +26,12 @@ module.exports = {
 
 
   post: function (req, res) {
-    console.log('Serving request type ' + req.method + ' for url ' + req.url + 'with the body ' + req.body);
-    models.messages.create(req.body, (err) => {
+    console.log('Serving request type ' + req.method + ' for url ' + req.url + 'with the body ' + JSON.stringify(req.body));
+    models.messages.create(req.body.message, (err) => {
       if (err) {
-        res.send(400, 'Something went wrong in post');
+        res.sendStatus(400);
       } else {
-        res.send(201, 'Sucessfully posted message');
+        res.sendStatus(201);
       }
     });
   }
@@ -34,4 +41,15 @@ module.exports = {
   //set response code
   //call models as a promise
 
+  /*
+  res.status(200).json({ message: "Hello world" })
+
+res.json({token});
+
+res.status(500).json('Server Error');
+
+return res.status(400).json({
+  errors: errors.array()
+});
+*/
 };

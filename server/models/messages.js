@@ -1,38 +1,41 @@
 var db = require('../db');
-const mysql = require('mysql2');
+
 
 module.exports = {
   getAll: function (callback) {//callback formatted like (err, data)
     //connect to db
     //query all messages
     //call callback with messages
-    const dbConnection = mysql.createConnection({
-      user: 'root',
-      password: '',
-      database: 'chat',
-    });
-    dbConnection.connect();
-    dbConnection.query('SELECT text FROM messages', (err, result) => {
+
+    db.query('SELECT text FROM messages', (err, result) => {
       if (err) {
         callback(err);
       } else {
-        callback(err, result);
+        console.log(result);
+        callback(null, result);
       }
     });
-    dbConnection.end();
+
   }, // a function which produces all the messages
 
+/*
+[
+    {
+        "text": "testData"
+    }
+]
+*/
+
   create: function (message, callback) {//callback formatted like (err)
-    //
-    const dbConnection = mysql.createConnection({
-      user: 'root',
-      password: '',
-      database: 'chat',
-    });
-    dbConnection.connect();
-    dbConnection.query('INSERT INTO messages (text) VALUES (message)', (err) => {
+    let test = 'testData';
+    //let statement = `INSERT INTO messages (text) VALUES ("${test}")`;
+    let statement = `INSERT INTO messages (text) VALUES (${db.escape(message)})`;
+    db.query(statement, (err, results, fields) => {
       if (err) {
         callback(err);
+      } else {
+        console.log('created');
+        callback(null);
       }
     });
 
